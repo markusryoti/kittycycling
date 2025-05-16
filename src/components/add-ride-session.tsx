@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useRides } from "@/lib/ride-sessions";
+import { useRides } from "@/lib/ride-sessions/ride-sessions";
 
 const formSchema = z.object({
   distance: z.coerce.number().min(1, {
@@ -41,7 +41,7 @@ export default function AddRideSession() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     addSession({
       id: crypto.randomUUID(),
-      date: values.date,
+      date: new Date(values.date),
       distance: values.distance,
     });
     form.reset();
@@ -49,7 +49,7 @@ export default function AddRideSession() {
 
   return (
     <div>
-      <h2 className="text-2xl mb-8 text-start">Add a new session</h2>
+      <h2 className="text-2xl mb-8 text-start">Add ride session</h2>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

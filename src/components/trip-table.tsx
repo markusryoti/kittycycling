@@ -8,8 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useRides } from "@/lib/ride-sessions";
 import { Button } from "./ui/button";
+import { useRides } from "@/lib/ride-sessions/ride-sessions";
 
 export function TableDemo() {
   const { sessions, removeSession } = useRides();

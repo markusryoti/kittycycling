@@ -17,34 +17,29 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { useRides } from "@/lib/ride-sessions";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
+import { useRides } from "@/lib/ride-sessions/ride-sessions";
+import { generateChartData } from "@/lib/chart-data/chart-data";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  distance: {
+    label: "Distance",
     color: "var(--chart-4)",
+  },
+  goal: {
+    label: "Goal",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
 export function DistanceChart() {
-  const { sessions } = useRides();
+  const { sessions, rideTarget } = useRides();
 
-  let sum = 0;
-
-  const cumulative = sessions.map((s) => {
-    const curr = s.distance + sum;
-    sum += s.distance;
-    return { date: Intl.DateTimeFormat().format(s.date), distance: curr };
-  });
+  const chartData = generateChartData(
+    sessions,
+    Intl.DateTimeFormat("fi-FI"),
+    rideTarget
+  );
 
   return (
     <Card>
@@ -58,7 +53,7 @@ export function DistanceChart() {
         <ChartContainer config={chartConfig}>
           <AreaChart
             accessibilityLayer
-            data={cumulative}
+            data={chartData}
             margin={{
               left: 12,
               right: 12,
@@ -75,13 +70,23 @@ export function DistanceChart() {
               cursor={false}
               content={<ChartTooltipContent indicator="dot" />}
             />
+            {rideTarget && (
+              <Area
+                dataKey="goal"
+                type="natural"
+                fill="var(--color-goal)"
+                fillOpacity={0.4}
+                stroke="var(--color-goal)"
+                stackId={0}
+              />
+            )}
             <Area
               dataKey="distance"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="var(--color-distance)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
-              stackId="a"
+              stroke="var(--color-distance)"
+              stackId={1}
             />
           </AreaChart>
         </ChartContainer>
