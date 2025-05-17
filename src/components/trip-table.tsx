@@ -20,9 +20,11 @@ import {
   PaginationNext,
 } from "./ui/pagination";
 import { isBefore } from "date-fns";
+import { useState } from "react";
 
 export function TableDemo() {
   const { sessions, removeSession } = useRides();
+  const [currentPage, setCurrentPage] = useState(0);
 
   const rideSessions = [...sessions];
   rideSessions.sort((a, b) => (isBefore(a.date, b.date) ? 1 : -1));
@@ -36,9 +38,12 @@ export function TableDemo() {
   const maxItems = 5;
   const numPages = Math.ceil(numberOfSessions / maxItems) || 1;
 
+  const startIndex = currentPage * maxItems;
+  const endIdex = startIndex + maxItems;
+
   const filtered = rideSessions.slice(
-    0,
-    Math.min(maxItems, rideSessions.length)
+    Math.max(startIndex, 0),
+    Math.min(endIdex, rideSessions.length)
   );
 
   const paginationItems = () => {
@@ -54,6 +59,10 @@ export function TableDemo() {
     return <>{items}</>;
   };
 
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <div>
       <h2 className="text-2xl text-start mb-4">Ride Sessions</h2>
@@ -67,7 +76,7 @@ export function TableDemo() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sessions.map((session) => (
+            {filtered.map((session) => (
               <TableRow key={session.id}>
                 <TableCell className="text-start">
                   {Intl.DateTimeFormat().format(session.date)}
@@ -104,14 +113,38 @@ export function TableDemo() {
           <Pagination className="">
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href="#" />
+                {currentPage === 0 ? (
+                  <Button disabled variant="ghost">
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(currentPage - 1)}
+                    />
+                  </Button>
+                ) : (
+                  <Button variant="ghost">
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(currentPage - 1)}
+                    />
+                  </Button>
+                )}
               </PaginationItem>
               {paginationItems()}
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
               <PaginationItem>
-                <PaginationNext href="#" />
+                {currentPage === numPages - 1 ? (
+                  <Button disabled variant="ghost">
+                    <PaginationNext
+                      onClick={() => handlePageChange(currentPage + 1)}
+                    />
+                  </Button>
+                ) : (
+                  <Button variant="ghost">
+                    <PaginationNext
+                      onClick={() => handlePageChange(currentPage + 1)}
+                    />
+                  </Button>
+                )}
               </PaginationItem>
             </PaginationContent>
           </Pagination>
