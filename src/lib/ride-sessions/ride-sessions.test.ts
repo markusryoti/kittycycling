@@ -58,7 +58,7 @@ test("can add ride session", () => {
   expect(isEqual(newState.sessions[5].date, newDate)).toBe(true);
 });
 
-test("can remove ride session", () => {
+test("can remove ride session from the beginning", () => {
   const id = "00a81a06-2d0b-4db6-825a-308f790d4117";
 
   const newState = rideSessionReducer(sampleState, {
@@ -69,4 +69,48 @@ test("can remove ride session", () => {
   });
 
   expect(newState.sessions).length(4);
+  newState.sessions.forEach((s) => expect(s.id).not.toBe(id));
+});
+
+test("can remove ride session from the middle", () => {
+  const id = "e1e2b62d-546f-491e-9bf3-2548b172bca0";
+
+  const newState = rideSessionReducer(sampleState, {
+    type: "remove-session",
+    payload: {
+      id,
+    },
+  });
+
+  expect(newState.sessions).length(4);
+  newState.sessions.forEach((s) => expect(s.id).not.toBe(id));
+});
+
+test("can remove ride session from the end", () => {
+  const id = "1bf4a494-3cba-451b-afaa-baf76e507a75";
+
+  const newState = rideSessionReducer(sampleState, {
+    type: "remove-session",
+    payload: {
+      id,
+    },
+  });
+
+  expect(newState.sessions).length(4);
+  newState.sessions.forEach((s) => expect(s.id).not.toBe(id));
+});
+
+test("can set ride target", () => {
+  const newState = rideSessionReducer(sampleState, {
+    type: "set-ride-target",
+    payload: {
+      rideTarget: {
+        date: new Date("2025-05-17"),
+        distance: 2000,
+      },
+    },
+  });
+
+  expect(newState.rideTarget?.distance).toBe(2000);
+  expect(isEqual(newState.rideTarget!.date, new Date("2025-05-17"))).toBe(true);
 });

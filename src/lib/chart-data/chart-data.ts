@@ -43,14 +43,16 @@ function generateWithTarget(
   }
 
   let sum = 0;
-  const cumulative = dates.map<ChartData>((d, i) => {
+  const cumulative: ChartData[] = [];
+
+  dates.forEach((d, i) => {
     const goal = getCurrentGoal(rideTarget.distance, totalDays, i);
     const formattedDate = formatter.format(d);
     const session = distanceMap.get(formattedDate);
     if (session) {
       sum += session.distance;
     }
-    return { date: formattedDate, distance: sum, goal };
+    cumulative.push({ date: formattedDate, distance: sum, goal });
   });
 
   return cumulative;

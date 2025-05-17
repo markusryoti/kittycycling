@@ -1,7 +1,5 @@
-"use client";
-
 import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 import {
   Card,
@@ -51,7 +49,7 @@ export function DistanceChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <AreaChart
+          <LineChart
             accessibilityLayer
             data={chartData}
             margin={{
@@ -66,29 +64,22 @@ export function DistanceChart() {
               axisLine={false}
               tickMargin={8}
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
-            />
-            {rideTarget && (
-              <Area
-                dataKey="goal"
-                type="natural"
-                fill="var(--color-goal)"
-                fillOpacity={0.4}
-                stroke="var(--color-goal)"
-                stackId={0}
-              />
-            )}
-            <Area
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
               dataKey="distance"
-              type="natural"
-              fill="var(--color-distance)"
-              fillOpacity={0.4}
+              type="monotone"
               stroke="var(--color-distance)"
-              stackId={1}
+              strokeWidth={2}
+              dot={false}
             />
-          </AreaChart>
+            <Line
+              dataKey="goal"
+              type="monotone"
+              stroke="var(--color-goal)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
         </ChartContainer>
       </CardContent>
       <CardFooter>

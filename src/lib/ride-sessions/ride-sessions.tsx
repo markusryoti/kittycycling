@@ -28,6 +28,7 @@ type RideSessionCtx = {
   rideTarget?: RideTarget;
   addSession: (session: RideSession) => void;
   removeSession: (id: string) => void;
+  setTarget: (target: RideTarget) => void;
 };
 
 const RideSessionContext = createContext<RideSessionCtx>({} as RideSessionCtx);
@@ -36,7 +37,8 @@ const storageKey = "ride-sessions";
 
 type reducerActions =
   | { type: "add-session"; payload: { session: RideSession } }
-  | { type: "remove-session"; payload: { id: string } };
+  | { type: "remove-session"; payload: { id: string } }
+  | { type: "set-ride-target"; payload: { rideTarget: RideTarget } };
 
 export function rideSessionReducer(
   currentState: RideSessionState,
@@ -58,6 +60,11 @@ export function rideSessionReducer(
         ...currentState,
         sessions: filtered,
       };
+    case "set-ride-target":
+      return {
+        ...currentState,
+        rideTarget: action.payload.rideTarget,
+      };
   }
   return currentState;
 }
@@ -73,7 +80,7 @@ export const RideSessionContextProvider = ({
   const [state, dispatch] = useReducer(rideSessionReducer, {
     sessions: storedSessions,
     rideTarget: {
-      date: new Date("2025-07-15"),
+      date: new Date("2025-07-03"),
       distance: 2500,
     },
   });
@@ -91,6 +98,10 @@ export const RideSessionContextProvider = ({
     dispatch({ type: "remove-session", payload: { id } });
   };
 
+  const setTarget = (target: RideTarget) => {
+    dispatch({ type: "set-ride-target", payload: { rideTarget: target } });
+  };
+
   return (
     <RideSessionContext.Provider
       value={{
@@ -98,6 +109,7 @@ export const RideSessionContextProvider = ({
         rideTarget: state.rideTarget,
         addSession,
         removeSession,
+        setTarget,
       }}
     >
       {children}
@@ -106,7 +118,7 @@ export const RideSessionContextProvider = ({
 };
 
 export const useRides = () => {
-  const { sessions, rideTarget, addSession, removeSession } =
+  const { sessions, rideTarget, addSession, removeSession, setTarget } =
     useContext(RideSessionContext);
 
   return {
@@ -114,5 +126,6 @@ export const useRides = () => {
     rideTarget,
     addSession,
     removeSession,
+    setTarget,
   };
 };

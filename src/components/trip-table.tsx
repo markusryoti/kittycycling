@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -10,55 +9,114 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
 import { useRides } from "@/lib/ride-sessions/ride-sessions";
+import { Trash2 } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationLink,
+  PaginationEllipsis,
+  PaginationNext,
+} from "./ui/pagination";
+import { isBefore } from "date-fns";
 
 export function TableDemo() {
   const { sessions, removeSession } = useRides();
 
-  const total = sessions.reduce((prev, curr) => prev + curr.distance, 0);
+  const rideSessions = [...sessions];
+  rideSessions.sort((a, b) => (isBefore(a.date, b.date) ? 1 : -1));
+
+  const totalDistance = rideSessions.reduce(
+    (prev, curr) => prev + curr.distance,
+    0
+  );
+
+  const numberOfSessions = rideSessions.length;
+  const maxItems = 5;
+  const numPages = Math.ceil(numberOfSessions / maxItems) || 1;
+
+  const filtered = rideSessions.slice(
+    0,
+    Math.min(maxItems, rideSessions.length)
+  );
+
+  const paginationItems = () => {
+    const items = [];
+    for (let i = 0; i < numPages; i++) {
+      items.push(
+        <PaginationItem key={crypto.randomUUID()}>
+          <PaginationLink href="#">{i + 1}</PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return <>{items}</>;
+  };
 
   return (
     <div>
       <h2 className="text-2xl text-start mb-4">Ride Sessions</h2>
-      <Table className="max-w-4xl">
-        <TableCaption>A list of your ride sessions.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Distance</TableHead>
-            <TableHead>Delete</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sessions.map((session) => (
-            <TableRow key={session.id}>
-              <TableCell className="text-start">
-                {Intl.DateTimeFormat().format(session.date)}
-              </TableCell>
-              <TableCell className="text-start">{session.distance}</TableCell>
-              <TableCell
-                className="text-start"
-                onClick={() => removeSession(session.id)}
-              >
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="hover:cursor-pointer"
+      <div>
+        <Table className="max-w-4xl">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Distance</TableHead>
+              <TableHead>Delete</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sessions.map((session) => (
+              <TableRow key={session.id}>
+                <TableCell className="text-start">
+                  {Intl.DateTimeFormat().format(session.date)}
+                </TableCell>
+                <TableCell className="text-start">{session.distance}</TableCell>
+                <TableCell
+                  className="text-start"
+                  onClick={() => removeSession(session.id)}
                 >
-                  X
-                </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="hover:cursor-pointer"
+                  >
+                    <Trash2 />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell className="text-start">Total</TableCell>
+              <TableCell className="text-start" colSpan={2}>
+                {totalDistance}
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell className="text-start">Total</TableCell>
-            <TableCell className="text-start" colSpan={2}>
-              {total}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+          </TableFooter>
+        </Table>
+        <div className="flex py-6">
+          <span className="text-gray-600 text-sm text-nowrap">
+            {numberOfSessions} sessions
+          </span>
+          <Pagination className="">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious href="#" />
+              </PaginationItem>
+              {paginationItems()}
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext href="#" />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </div>
     </div>
   );
 }
