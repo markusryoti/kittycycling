@@ -26,26 +26,49 @@ export default function TablePagination({
   ) => {
     const items = [];
 
-    for (let i = 0; i < numPages; i++) {
-      // Don't show more than current+1
-      if (i > 2 && i > currentPage + 1) {
-        break;
-      }
-
-      // Don't show more than current-1
-      if (i > 2 && i < currentPage - 1) {
-        continue;
-      }
-
-      // Ellipsis
-      if (i == 2) {
+    if (numPages < 6) {
+      for (let i = 0; i < numPages; i++) {
         items.push(
           <PaginationItem key={crypto.randomUUID()}>
-            <PaginationEllipsis />
+            <PaginationLink
+              isActive={currentPage === i}
+              onClick={() => handlePageChange(i)}
+            >
+              {i + 1}
+            </PaginationLink>
           </PaginationItem>
         );
       }
 
+      return items;
+    }
+
+    [0, 1].forEach((i) => {
+      items.push(
+        <PaginationItem key={crypto.randomUUID()}>
+          <PaginationLink
+            isActive={currentPage === i}
+            onClick={() => handlePageChange(i)}
+          >
+            {i + 1}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    });
+
+    const tailStartIndex = currentPage > 2 ? currentPage - 1 : 2;
+    const tailEndIndex =
+      currentPage > 2 ? Math.min(currentPage + 2, numPages) : 5;
+
+    if (tailStartIndex > 2) {
+      items.push(
+        <PaginationItem key={crypto.randomUUID()}>
+          <PaginationEllipsis />
+        </PaginationItem>
+      );
+    }
+
+    for (let i = tailStartIndex; i < tailEndIndex; i++) {
       items.push(
         <PaginationItem key={crypto.randomUUID()}>
           <PaginationLink

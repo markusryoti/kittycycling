@@ -20,7 +20,7 @@ export function TableDemo() {
 
   const rideSessions = [...sessions];
 
-  const maxItems = 10;
+  const maxItems = 3;
   const numberOfSessions = rideSessions.length;
   const numPages = Math.ceil(numberOfSessions / maxItems) || 1;
 
