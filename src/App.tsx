@@ -1,7 +1,7 @@
 import "./App.css";
 import AddRideSession from "./components/add-ride-session";
 import { DistanceChart } from "./components/distance-chart";
-import { TableDemo } from "./components/trip-table";
+import { TableDemo } from "./components/ride-session-table";
 import { RideSessionContextProvider } from "./lib/ride-sessions/ride-sessions";
 
 function App() {
