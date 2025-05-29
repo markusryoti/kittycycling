@@ -36,11 +36,11 @@ export function DistanceChart() {
   const chartData = generateChartData(
     sessions,
     Intl.DateTimeFormat("fi-FI"),
-    rideTarget
+    rideTarget,
   );
 
   return (
-    <Card>
+    <Card className="w-full max-w-4xl">
       <CardHeader>
         <CardTitle>Cumulative Distance</CardTitle>
         <CardDescription>

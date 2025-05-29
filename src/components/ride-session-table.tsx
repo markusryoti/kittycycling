@@ -32,7 +32,7 @@ export function TableDemo() {
   );
 
   return (
-    <div>
+    <div className="md:min-w-3xl">
       <h2 className="text-2xl text-start mb-4">Ride Sessions</h2>
       <div>
         <Table className="max-w-4xl">

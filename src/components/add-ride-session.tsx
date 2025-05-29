@@ -11,6 +11,13 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,74 +55,79 @@ export default function AddRideSession() {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl mb-8 text-start">Add ride session</h2>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col items-start gap-4"
-        >
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem className="text-start">
-                <FormLabel>Session Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>The session date</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="distance"
-            render={({ field }) => (
-              <FormItem className="w-48">
-                <FormLabel>Distance</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="1" {...field} />
-                </FormControl>
-                <FormDescription>The session distance</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div>
-            <Button type="submit">Submit</Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+    <Card className="">
+      <CardHeader>
+        <CardTitle>Add ride session</CardTitle>
+        <CardDescription>Details of your recent ride session</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col items-start gap-4"
+          >
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="text-start">
+                  <FormLabel>Session Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormDescription>The session date</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="distance"
+              render={({ field }) => (
+                <FormItem className="w-48">
+                  <FormLabel>Distance</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="1" {...field} />
+                  </FormControl>
+                  <FormDescription>The session distance</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div>
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
