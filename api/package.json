@@ -1,0 +1,18 @@
+{
+  "name": "hono-betterauth",
+  "type": "module",
+  "scripts": {
+    "dev": "bun src/index.ts"
+  },
+  "dependencies": {
+    "better-auth": "^1.2.8",
+    "dotenv": "^16.3.1",
+    "hono": "^3.11.7",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/pg": "^8.15.2",
+    "typescript": "^5.4.3"
+  }
+}
