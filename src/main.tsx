@@ -5,13 +5,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 
 import { routeTree } from "./routeTree.gen";
+import { authClient } from "./lib/auth-client";
 
 const queryClient = new QueryClient();
+
+export interface RouterContext {
+  queryClient: QueryClient;
+  authClient: typeof authClient;
+}
 
 const router = createRouter({
   routeTree,
   context: {
     queryClient,
+    authClient,
   },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
@@ -21,6 +28,7 @@ const router = createRouter({
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
+    context: RouterContext;
   }
 }
 

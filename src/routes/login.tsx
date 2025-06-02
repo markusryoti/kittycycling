@@ -8,13 +8,51 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { authClient } from "@/lib/auth-client";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useRef, useState, type FormEvent } from "react";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async ({ context }) => {
+    const { data } = await context.authClient.getSession();
+
+    if (data?.session) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: RouteComponent,
 });
 
+type Form = { email: string; password: string };
+
 function RouteComponent() {
+  const [userForm, setUserForm] = useState<Form>({} as Form);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserForm({
+      ...userForm,
+      [e.currentTarget.name]: e.currentTarget.value,
+    });
+  };
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await authClient.signIn.email({
+        email: userForm.email,
+        password: userForm.password,
+      });
+
+      console.log(res);
+
+      formRef.current?.reset();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -27,22 +65,30 @@ function RouteComponent() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form>
+              <form onSubmit={onSubmit}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       placeholder="m@example.com"
                       required
+                      onChange={onChange}
                     />
                   </div>
                   <div className="grid gap-3">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      onChange={onChange}
+                    />
                   </div>
                   <div className="flex flex-col gap-3">
                     <Button type="submit" className="w-full">

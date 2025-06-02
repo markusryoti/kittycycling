@@ -10,7 +10,14 @@ const app = new Hono();
 
 app.use("*", logger());
 
-app.use("/api/*", cors());
+app.use(
+  "/api/*",
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 app.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw));
 
 app.get("/", (c) => c.text("Hono + BetterAuth!"));

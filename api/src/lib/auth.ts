@@ -11,4 +11,5 @@ export const auth = betterAuth({
     password: "password",
     database: "cycle",
   }),
+  trustedOrigins: ["http://localhost:5173"],
 });

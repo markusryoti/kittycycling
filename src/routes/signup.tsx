@@ -37,9 +37,6 @@ function RouteComponent() {
         name: userForm.name,
         email: userForm.email,
         password: userForm.password,
-        fetchOptions: {
-          credentials: undefined,
-        },
       });
 
       console.log(res);
